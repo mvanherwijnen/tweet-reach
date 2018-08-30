@@ -14,3 +14,8 @@
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::get('/redis', function () {
+    $visits = Redis::Incr('visits');
+    return $visits;
+});
