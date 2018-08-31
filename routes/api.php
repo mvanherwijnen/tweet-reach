@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,4 +16,14 @@ use Illuminate\Http\Request;
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
+});
+
+Route::get('/tweet/{id}/{relation?}', function () {})
+    ->where('id', '[0-9]+')
+    ->middleware('resource.group')
+    ->name('tweet');
+
+Route::get('/redis', function () {
+    $visits = Redis::Incr('visits');
+    return $visits;
 });

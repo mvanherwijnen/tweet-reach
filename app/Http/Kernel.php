@@ -2,6 +2,10 @@
 
 namespace App\Http;
 
+use App\Http\Middleware\CacheMiddleware;
+use App\Http\Middleware\DomainModelMiddleware;
+use App\Http\Middleware\HalMiddleware;
+use App\Http\Middleware\ResourceMiddleware;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
 class Kernel extends HttpKernel
@@ -37,6 +41,13 @@ class Kernel extends HttpKernel
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
         ],
 
+        'resource.group' => [
+            'cache',
+            'domain.model',
+            'resource',
+            'hal'
+        ],
+
         'api' => [
             'throttle:60,1',
             'bindings',
@@ -59,5 +70,9 @@ class Kernel extends HttpKernel
         'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
         'signed' => \Illuminate\Routing\Middleware\ValidateSignature::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
+        'cache' => CacheMiddleware::class,
+        'domain.model' => DomainModelMiddleware::class,
+        'resource' => ResourceMiddleware::class,
+        'hal' => HalMiddleware::class
     ];
 }

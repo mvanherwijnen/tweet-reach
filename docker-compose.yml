@@ -11,7 +11,7 @@ services:
 
   myapp:
     tty: true
-    image: 'bitnami/laravel:latest'
+    build: ./docker/myapp
     labels:
       kompose.service.type: nodeport
     environment:
@@ -26,6 +26,7 @@ services:
       - 3000:3000
     volumes:
       - ./:/app
+      - ./docker/myapp/custom.ini:/usr/local/etc/php/conf.d/custom.ini
 
   redis:
     image: redis:4.0
