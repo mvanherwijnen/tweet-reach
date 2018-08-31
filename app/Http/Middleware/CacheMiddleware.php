@@ -28,7 +28,7 @@ class CacheMiddleware
         $response = $next($request);
         if ($response->getStatusCode() == 200) {
             $data = $response->getData(true);
-            //TODO move to a job for better performance, not needed for result
+            //TODO move to a job for better performance, not needed for json-result
             Cache::put($path, $data, 120);
         }
 
