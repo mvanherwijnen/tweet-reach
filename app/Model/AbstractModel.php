@@ -22,7 +22,7 @@ abstract class AbstractModel
     public function hydrate($data): void
     {
         $data = (array) $data;
-        foreach ($this->map as $field => $method) {
+        foreach ($this->getMap() as $field => $method) {
 
             if (is_numeric($field)) {
                 // $field & $method are same
@@ -43,7 +43,7 @@ abstract class AbstractModel
     public function extract(): array
     {
         $data = [];
-        foreach ($this->map as $field => $method) {
+        foreach ($this->getMap() as $field => $method) {
 
             if (is_numeric($field)) {
                 // $field & $method are same
