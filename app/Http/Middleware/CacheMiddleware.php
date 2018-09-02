@@ -28,7 +28,7 @@ class CacheMiddleware implements CacheAwareInterface, ConfigAwareInterface
         $path = $request->path();
         $cachedResult = $this->getCache()->get($path);
 
-        if (!empty($cachedResult)) {
+	    if (!empty($cachedResult)) {
             return new JsonResponse($cachedResult, 200);
         }
         /** @var JsonResponse $response */

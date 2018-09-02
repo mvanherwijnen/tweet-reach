@@ -22,8 +22,7 @@ class TweetService implements TweetServiceInterface
         if (array_key_exists('errors', $tweetData)) {
         	return null;
         }
-
-        return $this->hydrateTweet($tweetData);
+	    return $this->hydrateTweet($tweetData);
 
     }
 
@@ -43,8 +42,8 @@ class TweetService implements TweetServiceInterface
     protected function hydrateTweet($data): TweetModel
     {
 	    $data = (array) $data;
-        $data['user'] = new UserModel($data['user']);
-        $tweet = new TweetModel($data);
+	    $data['user'] = new UserModel($data['user']);
+	    $tweet = new TweetModel($data);
         $tweet->setTweetService($this);
         return $tweet;
     }

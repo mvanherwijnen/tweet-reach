@@ -14,7 +14,7 @@ class TweetServiceMock extends TweetService
             'user' => [
                 'id' => 6,
                 'name' => 'bar',
-                'follower_count' => 12
+                'followers_count' => 12
             ]
         ];
     }
@@ -28,7 +28,7 @@ class TweetServiceMock extends TweetService
                 'user' => [
                     'id' => 6,
                     'name' => 'bar',
-                    'follower_count' => 6
+                    'followers_count' => 6
                 ]
             ],
             [
@@ -37,7 +37,7 @@ class TweetServiceMock extends TweetService
                 'user' => [
                     'id' => 6,
                     'name' => 'bar',
-                    'follower_count' => 12
+                    'followers_count' => 12
                 ]
             ],
             [
@@ -46,7 +46,7 @@ class TweetServiceMock extends TweetService
                 'user' => [
                     'id' => 6,
                     'name' => 'bar',
-                    'follower_count' => 24
+                    'followers_count' => 24
                 ]
             ]
         ];

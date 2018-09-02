@@ -16,14 +16,14 @@ abstract class AbstractModel
 
     public function __construct($data)
     {
-        $this->hydrate($data);
+	    $this->hydrate($data);
     }
 
     public function hydrate($data): void
     {
         $data = (array) $data;
         foreach ($this->getMap() as $field => $method) {
-            if (is_numeric($field)) {
+	        if (is_numeric($field)) {
                 // $field & $method are same
                 $field = $method;
             }
