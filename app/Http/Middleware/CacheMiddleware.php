@@ -36,6 +36,7 @@ class CacheMiddleware implements CacheAwareInterface, ConfigAwareInterface
         $response = $next($request);
         if ($response->getStatusCode() == 200) {
 	        $data = $response->getData(true);
+	        //TODO use injected event dispatcher instead of using this magic function for better testability
 	        WriteToCache::dispatch($path, $data);
         }
 

@@ -26,6 +26,7 @@ class TweetService implements TweetServiceInterface
 
     }
 
+
     public function findRetweetsByTweetId($id): array
     {
         $retweetsData = $this->fetchRetweetsDataById($id);

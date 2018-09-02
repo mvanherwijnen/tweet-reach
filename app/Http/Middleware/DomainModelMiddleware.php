@@ -35,7 +35,6 @@ class DomainModelMiddleware implements ApplicationAwareInterface, ConfigAwareInt
      */
     public function handle(Request $request, Closure $next)
     {
-
 	    $resourceConfig = $this->getResourceConfig($request);
         if (!array_key_exists(DomainModelMiddleware::REPOSITORY, $resourceConfig)) {
             $this->throwMisconfiguration($request, 'Repository is missing');
@@ -49,7 +48,6 @@ class DomainModelMiddleware implements ApplicationAwareInterface, ConfigAwareInt
         $id = $request->route('id');
 
 	    $model = $repository->$method($id);
-
         if(empty($model)){
             return new JsonResponse(null, 404);
         }
