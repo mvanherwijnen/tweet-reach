@@ -3,18 +3,24 @@
 namespace App\Listeners;
 
 use App\Model\AbstractModel;
+use App\Service\Cache\CacheAwareInterface;
+use App\Service\Cache\CacheAwareTrait;
+use App\Service\Config\ConfigAwareInterface;
+use App\Service\Config\ConfigAwareTrait;
 use App\Service\TweetService\TweetServiceInterface;
 use Illuminate\Cache\Events\KeyForgotten;
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Config;
+use Illuminate\Cache\Repository as Cache;
+use Illuminate\Config\Repository as Config;
 
-class UpdateCache
+class UpdateCache implements CacheAwareInterface, ConfigAwareInterface
 {
+	use CacheAwareTrait;
+	use ConfigAwareTrait;
     /** @var TweetServiceInterface */
     protected $tweetService;
 
     public function handle(KeyForgotten $event){
-        //TODO figure out how to replay a request. Now we end up with a handler that contains duplicate code and is too concrete
+        //TODO Replay request. Now we end up with a handler that contains duplicate code and is too concrete
         $path = $event->key;
         $pathFragments = explode('/', $path);
 
@@ -44,13 +50,18 @@ class UpdateCache
             $data['count'] = count($models);
             $data['items'] = $result;
         }
-
-        Cache::put($path, $data, Config::get('cache.minutes_in_cache'));
+		$minutesInCache = $this->getConfig()->get('cache.minutes_in_cache');
+        $this->getCache()->set($path, $data, $minutesInCache);
     }
 
-    public function __construct(TweetServiceInterface $service)
-    {
+    public function __construct(
+    	TweetServiceInterface $service,
+		Cache $cache,
+		Config $config
+    ){
         $this->tweetService = $service;
+        $this->setCache($cache);
+        $this->setConfig($config);
     }
 
     /**

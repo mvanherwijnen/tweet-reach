@@ -4,21 +4,27 @@ namespace App\Http\Middleware;
 
 use App\Service\Application\ApplicationAwareInterface;
 use App\Service\Application\ApplicationAwareTrait;
+use App\Service\Config\ConfigAwareInterface;
+use App\Service\Config\ConfigAwareTrait;
 use Closure;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Config\Repository as Config;
 
-class DomainModelMiddleware implements ApplicationAwareInterface
+
+class DomainModelMiddleware implements ApplicationAwareInterface, ConfigAwareInterface
 {
     use ApplicationAwareTrait;
+    use ConfigAwareTrait;
 
     const REPOSITORY = 'repository';
     const METHOD = 'method';
 
-    public function __construct(Application $application)
+    public function __construct(Application $application, Config $config)
     {
         $this->setApplication($application);
+        $this->setConfig($config);
     }
     /**
      * Handle an incoming request.
@@ -54,7 +60,7 @@ class DomainModelMiddleware implements ApplicationAwareInterface
 
     protected function getResourceConfig(Request $request)
     {
-        $resourcesConfig = config('resources');
+        $resourcesConfig = $this->getConfig()->get('resources');
         $resourceId = $request->route()->getName();
         return $resourcesConfig[$resourceId][self::class];
     }

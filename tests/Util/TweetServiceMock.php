@@ -2,12 +2,11 @@
 
 namespace Tests\Util;
 
-
 use App\Service\TweetService\TweetService;
 
 class TweetServiceMock extends TweetService
 {
-    protected function fetchTweetDataById($id)
+    protected function fetchTweetDataById($id): array
     {
         return [
             'id' => $id,
@@ -20,7 +19,7 @@ class TweetServiceMock extends TweetService
         ];
     }
 
-    protected function fetchRetweetsDataById($id)
+    protected function fetchRetweetsDataById($id): array
     {
         return [
             [
