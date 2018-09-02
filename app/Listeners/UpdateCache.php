@@ -6,6 +6,7 @@ use App\Model\AbstractModel;
 use App\Service\TweetService\TweetServiceInterface;
 use Illuminate\Cache\Events\KeyForgotten;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Config;
 
 class UpdateCache
 {
@@ -44,7 +45,7 @@ class UpdateCache
             $data['items'] = $result;
         }
 
-        Cache::put($path, $data, 120);
+        Cache::put($path, $data, Config::get('cache.minutes_in_cache'));
     }
 
     public function __construct(TweetServiceInterface $service)

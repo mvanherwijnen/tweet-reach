@@ -23,7 +23,6 @@ abstract class AbstractModel
     {
         $data = (array) $data;
         foreach ($this->getMap() as $field => $method) {
-
             if (is_numeric($field)) {
                 // $field & $method are same
                 $field = $method;
@@ -74,8 +73,9 @@ abstract class AbstractModel
             $links = [];
             foreach ($this->supportedRelations as $relation) {
                 //TODO get endpoint from model
-                $links[] = '/tweet/'.$this->getId().'/'.$relation;
+                $links[$relation] = '/tweet/'.$this->getId().'/'.$relation;
             }
+	        $data['links'] = $links;
         }
 
 

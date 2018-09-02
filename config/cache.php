@@ -17,6 +17,8 @@ return [
 
     'default' => env('CACHE_DRIVER', 'redis'),
 
+	'minutes_in_cache' => env('CACHE_DURATION', 120),
+
     /*
     |--------------------------------------------------------------------------
     | Cache Stores

@@ -8,14 +8,14 @@ class UserModel extends AbstractModel
 {
     protected $map = [
         'name',
-        'follower_count',
+        'followers_count',
     ];
 
     /** @var string */
     protected $name;
 
     /** @var int */
-    protected $followerCount;
+    protected $followersCount;
 
     /**
      * @return string
@@ -36,17 +36,17 @@ class UserModel extends AbstractModel
     /**
      * @return int
      */
-    public function getFollowerCount(): int
+    public function getFollowersCount(): int
     {
-        return $this->followerCount;
+        return $this->followersCount;
     }
 
     /**
-     * @param int $followerCount
+     * @param int $followersCount
      */
-    public function setFollowerCount(int $followerCount): void
+    public function setFollowersCount(int $followersCount): void
     {
-        $this->followerCount = $followerCount;
+        $this->followersCount = $followersCount;
     }
 
 

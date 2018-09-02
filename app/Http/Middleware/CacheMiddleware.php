@@ -6,6 +6,7 @@ use Closure;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Config;
 
 class CacheMiddleware
 {
@@ -29,7 +30,7 @@ class CacheMiddleware
         if ($response->getStatusCode() == 200) {
             $data = $response->getData(true);
             //TODO move to a job for better performance, not needed for json-result
-            Cache::put($path, $data, 120);
+            Cache::put($path, $data, Config::get('cache.minutes_in_cache'));
         }
 
         return $response;

@@ -19,7 +19,9 @@ class TweetService implements TweetServiceInterface
     public function findTweetByTweetId($id): ?TweetModel
     {
         $tweetData = $this->fetchTweetDataById($id);
-        //TODO whatif tweet does not exist/exception is thrown
+        if (array_key_exists('errors', $tweetData)) {
+        	return null;
+        }
 
         return $this->hydrateTweet($tweetData);
 
@@ -28,7 +30,9 @@ class TweetService implements TweetServiceInterface
     public function findRetweetsByTweetId($id): array
     {
         $retweetsData = $this->fetchRetweetsDataById($id);
-        //TODO whatif tweet does not exist/exception is thrown
+	    if (array_key_exists('errors', $retweetsData)) {
+		    return null;
+	    }
         $tweetModels = [];
         foreach($retweetsData as $retweetData) {
             $tweetModels[] = $this->hydrateTweet($retweetData);
@@ -38,20 +42,21 @@ class TweetService implements TweetServiceInterface
 
     protected function hydrateTweet($data): TweetModel
     {
+	    $data = (array) $data;
         $data['user'] = new UserModel($data['user']);
         $tweet = new TweetModel($data);
         $tweet->setTweetService($this);
         return $tweet;
     }
 
-    protected function fetchTweetDataById($id) {
-        return $this->getTwitterClient()->get(
+    protected function fetchTweetDataById($id): array{
+        return (array) $this->getTwitterClient()->get(
             'statuses/show/'.$id
         );
     }
 
-    protected function fetchRetweetsDataById($id) {
-        return $this->getTwitterClient()->get(
+    protected function fetchRetweetsDataById($id): array {
+        return (array) $this->getTwitterClient()->get(
             'statuses/retweets/'.$id
         );
     }

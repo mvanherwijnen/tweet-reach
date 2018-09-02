@@ -13,6 +13,9 @@ class DomainModelMiddleware implements ApplicationAwareInterface
 {
     use ApplicationAwareTrait;
 
+    const REPOSITORY = 'repository';
+    const METHOD = 'method';
+
     public function __construct(Application $application)
     {
         $this->setApplication($application);
@@ -27,12 +30,12 @@ class DomainModelMiddleware implements ApplicationAwareInterface
     public function handle(Request $request, Closure $next)
     {
         $resourceConfig = $this->getResourceConfig($request);
-        if (!array_key_exists('repository', $resourceConfig)) {
+        if (!array_key_exists(DomainModelMiddleware::REPOSITORY, $resourceConfig)) {
             $this->throwMisconfiguration($request, 'Repository is missing');
         }
         $app = $this->getApplication();
         $repository = $app->make($resourceConfig['repository']);
-        if (!array_key_exists('method', $resourceConfig)) {
+        if (!array_key_exists(DomainModelMiddleware::METHOD, $resourceConfig)) {
             $this->throwMisconfiguration($request, 'Method is missing');
         }
         $method = $resourceConfig['method'];
@@ -53,15 +56,14 @@ class DomainModelMiddleware implements ApplicationAwareInterface
     {
         $resourcesConfig = config('resources');
         $resourceId = $request->route()->getName();
-        return $resourcesConfig[$resourceId];
+        return $resourcesConfig[$resourceId][self::class];
     }
 
     public function throwMisconfiguration(
         Request $request,
         string $reason = null)
     {
-        $config = $this->getResourceConfig($request);
-        $resourceId = $config['resource_id'];
+        $resourceId = $request->route()->getName();
         $class = get_class($this);
 
         $message = "Middleware $class is incorrect configured for resource $resourceId.";
