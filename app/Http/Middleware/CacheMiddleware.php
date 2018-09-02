@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Jobs\WriteToCache;
 use App\Service\Cache\CacheAwareInterface;
 use App\Service\Cache\CacheAwareTrait;
 use App\Service\Config\ConfigAwareInterface;
@@ -34,10 +35,8 @@ class CacheMiddleware implements CacheAwareInterface, ConfigAwareInterface
         /** @var JsonResponse $response */
         $response = $next($request);
         if ($response->getStatusCode() == 200) {
-            $data = $response->getData(true);
-            //TODO move to a job for better performance, not needed for json-result
-	        $minutesInCache = $this->getConfig()->get('cache.minutes_in_cache');
-	        $this->getCache()->set($path, $data, $minutesInCache);
+	        $data = $response->getData(true);
+	        WriteToCache::dispatch($path, $data);
         }
 
         return $response;
