@@ -26,7 +26,7 @@ Used https://hub.docker.com/r/bitnami/laravel/ as base, added redis container
 - Minimal use of facade helpers (using DI instead), to increase testability
 - Actions which are not needed to return response are moved to jobs 
     - In this case, only writing to cache is not needed to return response, 
-        so this does not result in a huge performance boost
+        so this does not result in a performance boost
 
 ## Middleware
 
@@ -48,7 +48,7 @@ A call to the API results in the execution of middleware in this order:
     
 ## Jobs
 
-The WriteToCache job writes the response to cache on the route path as key.
+The WriteToCache job writes the response to cache with the route path as key.
 
 ## Listeners
 
