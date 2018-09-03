@@ -1,60 +1,57 @@
-<p align="center"><img src="https://laravel.com/assets/img/components/logo-laravel.svg"></p>
+## Installation
 
-<p align="center">
-<a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/d/total.svg" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/v/stable.svg" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/license.svg" alt="License"></a>
-</p>
+- $ git clone https://github.com/mvanherwijnen/tweet-reach.git
+- Create .env file in project root folder (copy from .env.example)
+    - Twitter credentials are required and not provided
+- $ docker-compose up
 
-## About Laravel
+## Testing
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel attempts to take the pain out of development by easing common tasks used in the majority of web projects, such as:
+- $ docker-compose exec myapp phpunit
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## API
 
-Laravel is accessible, yet powerful, providing tools needed for large, robust applications.
+- GET $HOST/api/tweet/{id}
+- GET $HOST/api/tweet/{id}/retweets
 
-## Learning Laravel
+In development, $HOST= http://localhost:3000/
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of any modern web application framework, making it a breeze to get started learning the framework.
+## Docker
 
-If you're not in the mood to read, [Laracasts](https://laracasts.com) contains over 1100 video tutorials on a range of topics including Laravel, modern PHP, unit testing, JavaScript, and more. Boost the skill level of yourself and your entire team by digging into our comprehensive video library.
+Used https://hub.docker.com/r/bitnami/laravel/ as base, added redis container
 
-## Laravel Sponsors
+## Architecture
 
-We would like to extend our thanks to the following sponsors for helping fund on-going Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell):
+- Middleware-based architecture, no controllers
+- Minimal use of facade helpers (using DI instead), to increase testability
+- Actions which are not needed to return response are moved to jobs 
+    - In this case, only writing to cache is not needed to return response, 
+        so this does not result in a huge performance boost
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[British Software Development](https://www.britishsoftware.co)**
-- [Fragrantica](https://www.fragrantica.com)
-- [SOFTonSOFA](https://softonsofa.com/)
-- [User10](https://user10.com)
-- [Soumettre.fr](https://soumettre.fr/)
-- [CodeBrisk](https://codebrisk.com)
-- [1Forge](https://1forge.com)
-- [TECPRESSO](https://tecpresso.co.jp/)
-- [Runtime Converter](http://runtimeconverter.com/)
-- [WebL'Agence](https://weblagence.com/)
-- [Invoice Ninja](https://www.invoiceninja.com)
+## Middleware
 
-## Contributing
+A call to the API results in the execution of middleware in this order:
+-  CacheMiddleware
+    - returns cached response if exists
+    - schedules job to write to cache 
+-  DomainModelMiddleware
+    - retrieves domain model from repository/service
+    - throws error if repository and method are not correctly configured
+    - returns 404 if model does not exist
+-  ResourceMiddleware
+    - passes model to request if single model
+    - passes collection to request if relation of model is requested (retweets in a concrete example)
+    - returns 400 if requested relation is not supported by the model 
+-  HalMiddleware
+    - extracts HAL data from the resource 
+    - returns JsonResponse with code 200
+    
+## Jobs
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+The WriteToCache job writes the response to cache on the route path as key.
 
-## Security Vulnerabilities
+## Listeners
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+The UpdateCache listener listens to the KeyForgotten event of the Cache repository.
+This listener is a candidate for refactoring, since it contains duplicate code and is too concrete.
+Proposed solution is to replay the request and cache the result
