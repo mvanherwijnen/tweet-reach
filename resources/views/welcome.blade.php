@@ -66,7 +66,7 @@
         <script>
             function submit() {
                 let url = document.getElementById("twitter_url").value;
-                let isTwitterUrl = new RegExp('/^https:\\/\\/twitter.com\\/.*\\/status\\/(\\d*)$/');
+                let isTwitterUrl = new RegExp('^https:\\/\\/twitter.com\\/.*\\/status\\/(\\d*)$');
                 let matches = url.match(isTwitterUrl);
                 if (matches) {
                     let id = matches[1];
