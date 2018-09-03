@@ -55,3 +55,13 @@ The WriteToCache job writes the response to cache with the route path as key.
 The UpdateCache listener listens to the KeyForgotten event of the Cache repository.
 This listener is a candidate for refactoring, since it contains duplicate code and is too concrete.
 Proposed solution is to replay the request and cache the result
+
+## Discussion
+
+The Twitter API does not return all retweets of a tweet, it is limited to the most recent 100. 
+(According to their documentation, it looks like they even return less tweets)
+
+## Frontend
+
+The frontend is reduced to the bare minimum. One submit function in plain javascript which contains all logic. No testing. Shame on me. 
+Go to http://localhost:3000/

@@ -63,6 +63,40 @@
                 margin-bottom: 30px;
             }
         </style>
+        <script>
+            function submit() {
+                let url = document.getElementById("twitter_url").value;
+                let isTwitterUrl = new RegExp('https:\\/\\/twitter.com\\/.*\\/status\\/(\\d*)');
+                let matches = url.match(isTwitterUrl);
+                if (matches) {
+                    let id = matches[1];
+                    let xmlhttp = new XMLHttpRequest();
+                    xmlhttp.onreadystatechange = function () {
+                        let resultContainer = document.getElementById('result');
+                        if (this.readyState === 4 && this.status === 200) {
+                            let response = JSON.parse(this.responseText);
+                            let responseItems = response.items;
+                            var followers = 0;
+                            responseItems.forEach(function (item) {
+                                followers += item.user.followers_count;
+                            });
+                            resultContainer.innerText = "Potential reach is: " + followers;
+                        } else if (this.status === 404) {
+                            resultContainer.innerText = "Tweet not found";
+                        } else if (this.status === 400 || this.status === 500) {
+                            resultContainer.innerText = "Something went wrong";
+                        } else {
+                            resultContainer.innerText = "Loading";
+                        }
+                    };
+                    xmlhttp.open('GET', 'http://localhost:3000/api/tweet/'+id+'/retweets');
+                    xmlhttp.send();
+                }
+                else {
+                    document.getElementById('result').innerText = "This does not look like a valid tweet url";
+                }
+            }
+        </script>
     </head>
     <body>
         <div class="flex-center position-ref full-height">
@@ -79,15 +113,14 @@
 
             <div class="content">
                 <div class="title m-b-md">
-                    Laravel
+                    Tweet Reach
                 </div>
 
                 <div class="links">
-                    <a href="https://laravel.com/docs">Documentation</a>
-                    <a href="https://laracasts.com">Laracasts</a>
-                    <a href="https://laravel-news.com">News</a>
-                    <a href="https://forge.laravel.com">Forge</a>
-                    <a href="https://github.com/laravel/laravel">GitHub</a>
+                    <input id="twitter_url">
+                    <button onclick="submit()">Find reach</button>
+                </div>
+                <div id="result">
                 </div>
             </div>
         </div>
