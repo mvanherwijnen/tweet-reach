@@ -5,18 +5,14 @@ namespace App\Http\Middleware;
 use App\Jobs\WriteToCache;
 use App\Service\Cache\CacheAwareInterface;
 use App\Service\Cache\CacheAwareTrait;
-use App\Service\Config\ConfigAwareInterface;
-use App\Service\Config\ConfigAwareTrait;
 use Closure;
 use Illuminate\Cache\Repository as Cache;
-use Illuminate\Config\Repository as Config;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
-class CacheMiddleware implements CacheAwareInterface, ConfigAwareInterface
+class CacheMiddleware implements CacheAwareInterface
 {
 	use CacheAwareTrait;
-	use ConfigAwareTrait;
     /**
      * Handle an incoming request.
      *
@@ -43,11 +39,7 @@ class CacheMiddleware implements CacheAwareInterface, ConfigAwareInterface
         return $response;
     }
 
-    public function __construct(
-    	Cache $cache,
-		Config $config
-    ) {
+    public function __construct(Cache $cache) {
     	$this->setCache($cache);
-	    $this->setConfig($config);
     }
 }

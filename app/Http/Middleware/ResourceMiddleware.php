@@ -18,10 +18,10 @@ class ResourceMiddleware
     public function handle($request, Closure $next)
     {
         /** @var AbstractModel $model */
-        $model = $request->request->get(DomainModelMiddleware::class);
+        $model = $request->get(DomainModelMiddleware::class);
         $relation = $request->route('relation');
         if (empty($relation)) {
-            $request->request->set(ResourceMiddleware::class, $model);
+            $request->attributes->set(ResourceMiddleware::class, $model);
             return $next($request);
         }
 
@@ -32,7 +32,7 @@ class ResourceMiddleware
 
         $method = 'get' . $relation;
         $data = $model->$method();
-        $request->request->set(ResourceMiddleware::class, $data);
+        $request->attributes->set(ResourceMiddleware::class, $data);
         return $next($request);
     }
 }

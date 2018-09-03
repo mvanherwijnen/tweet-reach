@@ -25,10 +25,10 @@ class UpdateCache implements CacheAwareInterface, ConfigAwareInterface
         $pathFragments = explode('/', $path);
 
         $relation = null;
-        if (count($pathFragments) == 4) {
-            list($empty, $api, $resource, $id) = $pathFragments;
-        } else if (count($pathFragments) == 5){
-            list($empty, $api, $resource, $id, $relation) = $pathFragments;
+        if (count($pathFragments) == 3) {
+            list($api, $resource, $id) = $pathFragments;
+        } else if (count($pathFragments) == 4){
+            list($api, $resource, $id, $relation) = $pathFragments;
         } else {
             return;
         }

@@ -12,7 +12,6 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Config\Repository as Config;
 
-
 class DomainModelMiddleware implements ApplicationAwareInterface, ConfigAwareInterface
 {
     use ApplicationAwareTrait;
@@ -52,7 +51,7 @@ class DomainModelMiddleware implements ApplicationAwareInterface, ConfigAwareInt
             return new JsonResponse(null, 404);
         }
 
-        $request->request->set(DomainModelMiddleware::class, $model);
+        $request->attributes->set(DomainModelMiddleware::class, $model);
 
         return $next($request);
     }

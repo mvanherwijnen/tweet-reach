@@ -17,7 +17,7 @@ class HalMiddleware
      */
     public function handle($request, Closure $next)
     {
-        $responseModel = $request->request->get(ResourceMiddleware::class);
+        $responseModel = $request->get(ResourceMiddleware::class);
         $data = [];
         if (is_array($responseModel)) {
             $data['count'] = count($responseModel);
