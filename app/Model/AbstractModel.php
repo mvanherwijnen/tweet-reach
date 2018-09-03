@@ -73,7 +73,7 @@ abstract class AbstractModel
             $links = [];
             foreach ($this->supportedRelations as $relation) {
                 //TODO get endpoint from model
-                $links[$relation] = '/tweet/'.$this->getId().'/'.$relation;
+                $links[$relation] = 'api/tweet/'.$this->getId().'/'.$relation;
             }
 	        $data['links'] = $links;
         }

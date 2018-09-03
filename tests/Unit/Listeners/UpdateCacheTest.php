@@ -3,7 +3,6 @@
 namespace Tests\Unit\Listeners;
 
 use App\Listeners\UpdateCache;
-use App\Model\AbstractModel;
 use App\Model\Tweet\TweetModel;
 use App\Service\TweetService\TweetServiceInterface;
 use Illuminate\Cache\Events\KeyForgotten;
